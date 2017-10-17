@@ -49,7 +49,7 @@ public class HTTPClient {
 
     public void sendSensorSet(String sensorSetJSON) throws IOException{
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpPut httpPut = new HttpPut(URL + "sensorconfig");
+        HttpPut httpPut = new HttpPut(URL + "/sensorconfig");
 
         ObjectMapper mapper = new ObjectMapper();
         StringEntity entity = new StringEntity(sensorSetJSON);

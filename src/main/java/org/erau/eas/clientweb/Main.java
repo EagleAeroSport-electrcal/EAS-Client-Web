@@ -22,7 +22,8 @@ public class Main {
         int deviceID = 0;
         int flightID = 0;
 
-        GetLatestFile getLatestFile = new GetLatestFile("/Users/ferrinkatz/IdeaProjects/EAS-Client-Web/src/main/resources/");
+        // Final path for the file will be /EAS/logs
+        GetLatestFile getLatestFile = new GetLatestFile("C:\\Users\\Ferrin\\IdeaProjects\\EAS-Client-Web\\src\\main\\resources");
         workingFile = getLatestFile.getLastModifiedFile();
 
         try {
@@ -52,31 +53,16 @@ public class Main {
             System.out.println(e);
         }
 
-        sensorSet = output.split("-{2,}");
-        LinkedList<Sensor> sensorOutput = new LinkedList<Sensor>();
+        Sensor sensor = new Sensor();
 
-        for(int i = 0; i < sensorSet.length; i++)
-        {
-            HashMap<String, String> sensorData = new HashMap<String, String>();
-            String[] currentSensor = sensorSet[i].split("\\R");
-            for (int j = 0; j < currentSensor.length; j++)
-            {
-                String[] currentSection = currentSensor[j].split(":");
-                sensorData.put(currentSection[0], currentSection[1]);
-            }
-            Sensor sensor = new Sensor();
-            sensor.setFlightID(flightID);
-            sensor.setBoardId(deviceID);
-            sensor.setCalibration(0);
-            sensor.setType(sensorData.get("Sensor type "));
-            sensor.setSensorId(Integer.parseInt(sensorData.get("Sensor unique ID ").trim()));
-            sensorOutput.add(sensor);
-        }
+        sensor.setFlightID(flightID);
+        sensor.setBoardId(deviceID);
+        sensor.setBody(output);
 
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-            client.sendSensorSet(mapper.writeValueAsString(sensorOutput));
+            client.sendSensorSet(mapper.writeValueAsString(sensor));
         } catch (IOException e) {
             e.printStackTrace();
         }

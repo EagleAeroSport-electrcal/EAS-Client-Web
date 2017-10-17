@@ -6,11 +6,7 @@ public class Sensor {
 
     private int boardId;
 
-    private int sensorId;
-
-    private String type;
-
-    private int calibration;
+    private String body;
 
     public int getFlightID() {
         return flightID;
@@ -28,27 +24,11 @@ public class Sensor {
         this.boardId = boardId;
     }
 
-    public int getSensorId() {
-        return sensorId;
+    public String getBody() {
+        return body;
     }
 
-    public void setSensorId(int sensorId) {
-        this.sensorId = sensorId;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public int getCalibration() {
-        return calibration;
-    }
-
-    public void setCalibration(int calibration) {
-        this.calibration = calibration;
+    public void setBody(String output) {
+        this.body = body;
     }
 }
