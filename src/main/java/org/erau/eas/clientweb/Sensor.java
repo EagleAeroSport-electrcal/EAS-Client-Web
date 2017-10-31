@@ -28,7 +28,7 @@ public class Sensor {
         return body;
     }
 
-    public void setBody(String output) {
+    public void setBody(String body) {
         this.body = body;
     }
 }

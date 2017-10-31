@@ -1,5 +1,6 @@
 package org.erau.eas.clientweb;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -13,6 +14,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 public class HTTPClient {
      String URL;
@@ -49,10 +51,23 @@ public class HTTPClient {
 
     public void sendSensorSet(String sensorSetJSON) throws IOException{
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpPut httpPut = new HttpPut(URL + "/sensorconfig");
+        HttpPost httpPost = new HttpPost(URL + "/sensorconfig");
+
+        StringEntity entity = new StringEntity(sensorSetJSON);
+        httpPost.setEntity(entity);
+        httpPost.setHeader("Content-type", "application/json; charset=utf-8");
+
+        CloseableHttpResponse response = client.execute(httpPost);
+        client.close();
+    }
+
+    public void sendSensorData(DataSend dataSend) throws IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpPut httpPut = new HttpPut(URL + "/data");
 
         ObjectMapper mapper = new ObjectMapper();
-        StringEntity entity = new StringEntity(sensorSetJSON);
+        String sensorData = mapper.writeValueAsString(dataSend);
+        StringEntity entity = new StringEntity(sensorData);
         httpPut.setEntity(entity);
         httpPut.setHeader("Content-type", "application/json; charset=utf-8");
 

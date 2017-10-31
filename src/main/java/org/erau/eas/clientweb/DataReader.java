@@ -7,10 +7,20 @@ import java.io.RandomAccessFile;
 
 public class DataReader {
     private RandomAccessFile randomAccessFile;
+    private Long headerSize;
+    private File file;
+
+    public Long getHeaderSize() {
+        return headerSize;
+    }
 
     public DataReader(File input) throws FileNotFoundException {
-
+        file = input;
         randomAccessFile = new RandomAccessFile(input,"r");
+    }
+
+    public Long getFileSize(){
+        return file.length();
     }
 
     public void toDataStart(Long startAddress) throws IOException{
@@ -19,13 +29,18 @@ public class DataReader {
 
     public byte[] getNextFromFile(Long dataLength) throws IOException {
         byte[] output = new byte[dataLength.intValue()];
-        randomAccessFile.read(output);
+        int status = randomAccessFile.read(output);
+        if(status == -1)
+        {
+            throw new IOException();
+        }
         return output;
     }
 
-    public String getHeaderAFromFile() throws IOException{
+    public String getHeaderAFromFile(Integer headerASize) throws IOException{
 
-        byte[] fromFile = new byte[0x800];
+        headerSize = headerASize.longValue();
+        byte[] fromFile = new byte[headerASize];
         randomAccessFile.seek(0);
         randomAccessFile.read(fromFile);
 
