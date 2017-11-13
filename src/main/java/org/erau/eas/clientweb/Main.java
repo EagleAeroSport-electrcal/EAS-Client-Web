@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.primitives.Bytes;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -15,7 +14,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
+    private static long fileLocation;
     public static void main(String[] args) throws JsonProcessingException {
+        long packetSize = 24;
+        int headerSize = 0x800;
         File workingFile;
         String output = "";
         String[] sensorSet;
@@ -31,7 +33,7 @@ public class Main {
 
         try {
             dataReader = new DataReader(workingFile);
-            output = dataReader.getHeaderAFromFile(0x800);
+            output = dataReader.getHeaderAFromFile(headerSize);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -72,11 +74,14 @@ public class Main {
 
         try {
             if(dataReader != null){
-                dataReader.toDataStart(0x800L);
+                dataReader.toDataStart((long) headerSize);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        assert dataReader != null;
+        fileLocation = dataReader.getHeaderSize();
 
         final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         final DataReader finalDataReader = dataReader;
@@ -84,7 +89,7 @@ public class Main {
         int finalDeviceID = deviceID;
         executorService.schedule(new Runnable() {
             public void run() {
-                DataCollectorTask(client, finalDataReader, finalFlightID, finalDeviceID);
+                DataCollectorTask(client, finalDataReader, finalFlightID, finalDeviceID, packetSize);
             }
         },0, TimeUnit.MILLISECONDS);
 //        executorService.scheduleAtFixedRate(new Runnable() {
@@ -94,24 +99,23 @@ public class Main {
 //        }, 200, 200, TimeUnit.MILLISECONDS);
     }
 
-    private static void DataCollectorTask(HTTPClient client, DataReader dataReader, int flightId, int deviceId){
+    private static void DataCollectorTask(HTTPClient client, DataReader dataReader, int flightId, int deviceId, long packetSize){
         List<Byte> toSend = new ArrayList<Byte>();
         Long loops = 0L;
         Boolean endOfFile = false;
         Long fileSize = dataReader.getFileSize();
-        Long fileLocation = 0x800L;
         while(!endOfFile && fileLocation < fileSize){
             try{
-                byte[] toAdd = dataReader.getNextFromFile(24L);
+                byte[] toAdd = dataReader.getNextFromFile(packetSize);
                 loops++;
                 for (byte aToAdd : toAdd) {
                     toSend.add(aToAdd);
                 }
-                fileLocation += 24L;
+                fileLocation += packetSize;
             } catch (IOException e) {
                 try {
                     if(loops != 0){
-                        dataReader.toDataStart((loops * 24L) + dataReader.getHeaderSize());
+                        dataReader.toDataStart((loops * packetSize) + dataReader.getHeaderSize());
                     }
                     endOfFile = true;
                 } catch (IOException e1) {
@@ -121,6 +125,7 @@ public class Main {
         }
         byte[] output = Bytes.toArray(toSend);
         DataSend dataSend = new DataSend(flightId, deviceId);
+        dataSend.setPacketSize(packetSize);
         dataSend.setData(output);
 
         try {
