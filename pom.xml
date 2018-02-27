@@ -24,7 +24,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.erau.eas.serverweb.Application</mainClass>
+                            <mainClass>org.erau.eas.clientweb.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
