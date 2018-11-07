@@ -28,7 +28,7 @@ public class Main {
         DataReader dataReader = null;
 
         // Final path for the file will be /EAS/logs
-        GetLatestFile getLatestFile = new GetLatestFile("C:\\Users\\Ferrin\\IdeaProjects\\EAS-Client-Web\\src\\main\\resources");
+        GetLatestFile getLatestFile = new GetLatestFile("C:\\Users\\ferri\\IdeaProjects\\EAS-Client-Web\\src\\main\\resources");
         workingFile = getLatestFile.getLastModifiedFile();
 
         try {
@@ -100,7 +100,7 @@ public class Main {
     }
 
     private static void DataCollectorTask(HTTPClient client, DataReader dataReader, int flightId, int deviceId, long packetSize){
-        List<Byte> toSend = new ArrayList<Byte>();
+        List<Byte> toSend = new ArrayList<>();
         Long loops = 0L;
         Boolean endOfFile = false;
         Long fileSize = dataReader.getFileSize();

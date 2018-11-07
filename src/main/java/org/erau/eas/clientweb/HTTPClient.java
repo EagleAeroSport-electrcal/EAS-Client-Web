@@ -63,7 +63,7 @@ public class HTTPClient {
 
     public void sendSensorData(DataSend dataSend) throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpPut httpPut = new HttpPut(URL + "/data");
+        HttpPut httpPut = new HttpPut(URL + "/dataput");
 
         ObjectMapper mapper = new ObjectMapper();
         String sensorData = mapper.writeValueAsString(dataSend);
