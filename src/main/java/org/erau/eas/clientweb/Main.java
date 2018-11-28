@@ -87,11 +87,7 @@ public class Main {
         final DataReader finalDataReader = dataReader;
         int finalFlightID = flightID;
         int finalDeviceID = deviceID;
-        executorService.schedule(new Runnable() {
-            public void run() {
-                DataCollectorTask(client, finalDataReader, finalFlightID, finalDeviceID, packetSize);
-            }
-        },0, TimeUnit.MILLISECONDS);
+        executorService.schedule(() -> DataCollectorTask(client, finalDataReader, finalFlightID, finalDeviceID, packetSize),0, TimeUnit.MILLISECONDS);
 //        executorService.scheduleAtFixedRate(new Runnable() {
 //            public void run() {
 //                DataCollectorTask(client, finalDataReader, finalFlightID, finalDeviceID);
