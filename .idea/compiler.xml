@@ -6,11 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="client-web" />
         <module name="EAS-Client-Web" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="EAS-Client-Web" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
